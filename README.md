@@ -1,4 +1,4 @@
-# Data Warehouse Exam
+# Data Warehouse Exam fait par Kamal Moustoifa Ben et Mouhamadou Bamba Kane
 
 Projet d'examen d'entrepôt de données : ingestion, stockage, migration et traitement de données économiques (inflation, consommation, etc.) avec Python, SQLAlchemy, Alembic, MinIO et PostgreSQL.
 
