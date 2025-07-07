@@ -106,6 +106,4 @@ examen_entrepot/
 
 ---
 
-**Auteur :** Votre Nom
-
-Pour toute question, ouvrez une issue ou contactez l'auteur.
+**Auteur :** Kamal Moussa MOUSTOIFA BEN
