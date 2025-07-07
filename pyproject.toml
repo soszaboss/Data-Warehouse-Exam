@@ -1,0 +1,32 @@
+[project]
+name = "data-warehouse-exam"
+version = "1.0.0"
+description = "Examen d'entrepot de données"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "requests~=2.32.4",
+    "typer~=0.16.0",
+    "SQLAlchemy~=2.0.41",
+    "python-dotenv~=1.1.1",
+    "psycopg==3.2.9",
+    "pandas==2.3.0",
+    "minio==7.2.15",
+    "alembic-1.16.2",
+    "seaborn==0.13.2", 
+    "matplotlib==3.10.3",
+]
+
+[project.scripts]
+#init-db = "commands.init_db.init_db:cli"
+eltfire = "commands.eltfire.eltfire:cli"
+
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["app"]
+include = ["commands*", "database*", "utils*"]
+exclude = ["data*"]
