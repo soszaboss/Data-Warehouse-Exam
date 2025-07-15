@@ -1,4 +1,4 @@
-# Data Warehouse Exam
+# Data Warehouse Exam fait par Kamal Moustoifa Ben, Juste Aimé Vianney ZEHBIKA NDONG et Mouhamadou Bamba Kane
 
 ## Prérequis
 
@@ -150,6 +150,4 @@ Pour exécuter le pipeline ETL avec Docker :
 
 ---
 
-**Auteur :** Votre Nom
-
-Pour toute question, ouvrez une issue ou contactez l'auteur.
+**Auteur :** Kamal Moussa MOUSTOIFA BEN
