@@ -28,7 +28,7 @@
 
 1. **Construire et lancer les services**
    ```bash
-   docker-compose build
+   docker-compose build --no-cache app
    docker-compose up
    ```
    Cela démarre PostgreSQL, MinIO et exécute automatiquement le pipeline ETL via le service `app`.
