@@ -12,7 +12,7 @@ dependencies = [
     "psycopg==3.2.9",
     "pandas==2.3.0",
     "minio==7.2.15",
-    "alembic-1.16.2",
+    "alembic==1.16.2",
     "seaborn==0.13.2", 
     "matplotlib==3.10.3",
 ]

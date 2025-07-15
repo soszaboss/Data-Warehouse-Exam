@@ -1,4 +1,4 @@
-# Multi-stage build pour le service init_db
+ Multi-stage build pour le service init_db
 FROM python:3.11-slim AS builder
 
 WORKDIR /app

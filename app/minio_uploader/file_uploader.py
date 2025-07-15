@@ -1,15 +1,20 @@
 # file_uploader.py MinIO Python SDK example
+import os
+
+from dotenv import load_dotenv
 from minio import Minio
 from minio.error import S3Error
 
+
+load_dotenv()
 
 class MinioFileUploader:
     def __init__(self):
         # Create a client with the MinIO server playground, its access key
         # and secret key.
         self.client = Minio("play.min.io",
-            access_key="Q3AM3UQ867SPQQA43P2F",
-            secret_key="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
+            access_key=os.environ.get("MINIO_ACCESS_KEY", "Q3AM3UQ867SPQQA43P2F"),
+            secret_key=os.environ.get("MINIO_SECRET_KEY", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"),
         )
 
     def upload_file(self, bucket_name=None, source_file=None, destination_file=None):
