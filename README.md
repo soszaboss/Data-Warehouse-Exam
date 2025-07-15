@@ -1,15 +1,13 @@
 # Data Warehouse Exam fait par Kamal Moustoifa Ben, Juste Aimé Vianney ZEHBIKA NDONG et Mouhamadou Bamba Kane
 
-Projet d'examen d'entrepôt de données : ingestion, stockage, migration et traitement de données économiques (inflation, consommation, etc.) avec Python, SQLAlchemy, Alembic, MinIO et PostgreSQL.
-
 ## Prérequis
 
 - Python 3.11+
 - PostgreSQL (ou SQLite pour test)
 - MinIO (pour le stockage objet)
-- [pip](https://pip.pypa.io/en/stable/)
+- Docker & Docker Compose
 
-## Installation
+## Installation locale
 
 1. **Cloner le dépôt**
    ```bash
@@ -26,72 +24,117 @@ Projet d'examen d'entrepôt de données : ingestion, stockage, migration et trai
    pip install -e .
    ```
 
+## Utilisation avec Docker
+
+1. **Construire et lancer les services**
+   ```bash
+   docker-compose build
+   docker-compose up
+   ```
+   Cela démarre PostgreSQL, MinIO et exécute automatiquement le pipeline ETL via le service `app`.
+
+2. **Structure du service Docker**
+   - Les fichiers CSV sont téléchargés depuis la plateforme dans `app/utils/download.py`.
+   - Ils sont directement insérés dans les buckets MinIO depuis ce même fichier.
+   - Les données sont ensuite injectées dans la base PostgreSQL : le script lit les fichiers, nettoie avec pandas et insère via SQLAlchemy en une seule méthode optimisée.
+
+## Workflow du projet
+
+1. **Téléchargement des données**
+   - Les fichiers CSV sont récupérés depuis des URLs externes.
+   - Ils sont stockés localement dans le dossier `app/data/`.
+
+2. **Upload sur MinIO**
+   - Les fichiers sont envoyés dans le bucket MinIO `inflation-data` via le SDK Python.
+
+3. **Injection dans la base de données**
+   - Les fichiers sont lus avec pandas.
+   - Nettoyage et harmonisation des colonnes.
+   - Insertion dans la base PostgreSQL via SQLAlchemy (méthode optimisée, sans boucle).
+
 ## Configuration de l'environnement
 
-Créer un fichier `.env` à la racine du projet (ou dans `app/` selon votre structure) avec le contenu suivant :
+Créez un fichier `.env` à la racine du projet ou dans `app/` avec :
 
 ```
-DATABASE_URL=postgresql+psycopg2://user:password@localhost:5432/nom_de_votre_db
+DATABASE_URL=postgresql+psycopg://user:password@localhost:5432/nom_de_votre_db
 MINIO_ENDPOINT=localhost:9000
 MINIO_ACCESS_KEY=your-access-key
 MINIO_SECRET_KEY=your-secret-key
 MINIO_BUCKET=inflation-data
 ```
 
-Adaptez les valeurs à votre configuration.
+## Lancement avec Docker
 
-## Migration de la base de données
+Pour exécuter le pipeline ETL avec Docker :
 
-1. **Initialiser Alembic (si ce n'est pas déjà fait)**
-   ```powershell
-   alembic init app/alembic
-   ```
-2. **Configurer `alembic.ini`**
-   - `script_location = %(here)s/app/alembic`
-   - `sqlalchemy.url =` (laisser vide, la variable d'environnement sera utilisée)
-
-3. **Créer une migration après modification des modèles**
-   ```powershell
-   alembic revision --autogenerate -m "ajout ou modification de champs"
+1. **Construire l’image et lancer les services**
+   ```bash
+   docker-compose build
+   docker-compose up
    ```
 
-4. **Appliquer la migration**
-   ```powershell
-   alembic upgrade head
+2. **Le service `app` lance automatiquement le script d’insertion**
+   - Le script principal (`run_insert.py`) est exécuté dès le démarrage du conteneur.
+   - Les fichiers CSV sont téléchargés, envoyés sur MinIO, puis injectés dans la base PostgreSQL.
+
+3. **Pour relancer le pipeline manuellement**
+   - Arrête les services :
+     ```bash
+     docker-compose down
+     ```
+   - Relance le pipeline :
+     ```bash
+     docker-compose up app
+     ```
+
+**Remarque :**  
+- Toutes les dépendances et configurations sont gérées automatiquement dans le conteneur.
+- Vérifie les logs du service `app` pour suivre l’avancement du pipeline.
+
+---
+
+Ajoute cette section après "Lancement du pipeline ETL" pour clarifier l’utilisation avec Docker.## Lancement avec Docker
+
+Pour exécuter le pipeline ETL avec Docker :
+
+1. **Construire l’image et lancer les services**
+   ```bash
+   docker-compose build
+   docker-compose up
    ```
 
-## Lancement du script principal
+2. **Le service `app` lance automatiquement le script d’insertion**
+   - Le script principal (`run_insert.py`) est exécuté dès le démarrage du conteneur.
+   - Les fichiers CSV sont téléchargés, envoyés sur MinIO, puis injectés dans la base PostgreSQL.
 
-Pour lancer le pipeline ETL complet (téléchargement, upload MinIO, insertion base, etc.) :
+3. **Pour relancer le pipeline manuellement**
+   - Arrête les services :
+     ```bash
+     docker-compose down
+     ```
+   - Relance le pipeline :
+     ```bash
+     docker-compose up app
+     ```
 
-```powershell
-eltfire
-```
+**Remarque :**  
+- Toutes les dépendances et configurations sont gérées automatiquement dans le conteneur.
+- Vérifie les logs du service `app` pour suivre l’avancement du pipeline.
 
-Le script va :
-- Télécharger les fichiers de données
-- Les uploader sur MinIO
-- Insérer les données dans la base PostgreSQL
+---
 
-## Structure du projet
+## Lancement du pipeline ETL en local
 
-```
-examen_entrepot/
-│   pyproject.toml
-│   README.md
-│   .env
-│
-├── app/
-│   ├── commands/
-│   ├── database/
-│   ├── utils/
-│   ├── data/
-│   └── alembic/
-│
-└── ...
-```
+- **En local** :  
+  ```powershell
+  eltfire
+  ```
+- **Avec Docker** :  
+  Le pipeline s’exécute automatiquement au démarrage du service `app`.
 
 ## Dépendances principales
+
 - SQLAlchemy
 - Alembic
 - psycopg
@@ -100,8 +143,9 @@ examen_entrepot/
 - typer/click
 
 ## Conseils
-- Toujours activer l'environnement virtuel avant toute commande.
-- Adapter le fichier `.env` à votre environnement local.
+
+- Toujours activer l'environnement virtuel avant toute commande locale.
+- Adapter le fichier `.env` à votre environnement.
 - Pour toute migration, bien vérifier la cohérence entre les modèles et la base.
 
 ---
