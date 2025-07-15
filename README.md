@@ -70,7 +70,7 @@ Pour exécuter le pipeline ETL avec Docker :
 
 1. **Construire l’image et lancer les services**
    ```bash
-   docker-compose build
+   docker-compose build --no-cache app
    docker-compose up
    ```
 
